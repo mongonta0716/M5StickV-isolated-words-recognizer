@@ -3,6 +3,10 @@ from Maix import GPIO, I2S
 from fpioa_manager import *
 from board import board_info
 import os, Maix, lcd, image
+from pmu import axp192
+
+pmu = axp192()
+pmu.enablePMICSleepMode(True)
 
 sample_rate   = 16000
 words = ["1", "2", "3"]
@@ -22,12 +26,19 @@ fm.register(board_info.MIC_LRCLK,fm.fpioa.I2S0_WS, force=True)
 fm.register(board_info.MIC_CLK,fm.fpioa.I2S0_SCLK, force=True)
 fm.register(board_info.BUTTON_A, fm.fpioa.GPIO1, force=True)
 button_a = GPIO(GPIO.GPIO1, GPIO.IN, GPIO.PULL_UP)
+
+# data storage "/sd/" or "/flash/"
+storage = "/sd/"
 #####################################################################
 
 lcd.rotation(0)
 lcd_w = lcd.width()
 lcd_h = lcd.height()
 img = image.Image(size=(lcd_w, lcd_h))
+img.draw_rectangle((0, 0, lcd_w, lcd_h), fill=True, color=(255, 255, 255))
+img.draw_string(10, 10, "MaixPy", color=(255, 0, 0), scale=1, mono_space=0)
+img.draw_string(10, 50, "Isolated words Recognizer", color=(0, 0, 255), scale=1, mono_space=0)
+lcd.display(img)
 rx = I2S(I2S.DEVICE_0)
 rx.channel_config(rx.CHANNEL_0, rx.RECEIVER, align_mode=I2S.STANDARD_MODE)
 rx.set_sample_rate(sample_rate)
@@ -41,8 +52,11 @@ print(sr)
 sr.set_threshold(0, 0, 10000)
 
 def save_file(number, data):
-    filename0 = "/sd/" + "rec0_" + str(number) + ".sr"
-    filename1 = "/sd/" + "rec1_" + str(number) + ".sr"
+    img.draw_rectangle((0, 0, lcd_w, lcd_h), fill=True, color=(255, 255, 255))
+    img.draw_string(10, 10, "Data Saving...", color=(255, 0, 0), scale=2, mono_space=0)
+    lcd.display(img)
+    filename0 = storage + "rec0_" + str(number) + ".sr"
+    filename1 = storage + "rec1_" + str(number) + ".sr"
     print(filename0)
     print(filename1)
     print(len(data))
@@ -57,10 +71,13 @@ def save_file(number, data):
         f.write(bytearray(t1))
 
 def load_data(number):
+    img.draw_rectangle((0, 0, lcd_w, lcd_h), fill=True, color=(255, 255, 255))
+    img.draw_string(10, 10, "Data loading...", color=(255, 0, 0), scale=2, mono_space=0)
+    lcd.display(img)
     for i in range(number):
         print("load_data:" + str(i))
-        filename0 = "/sd/" + "rec0_" + str(i) + ".sr"
-        filename1 = "/sd/" + "rec1_" + str(i) + ".sr"
+        filename0 = storage + "rec0_" + str(i) + ".sr"
+        filename1 = storage + "rec1_" + str(i) + ".sr"
         with open(filename0, 'r') as f:
             data0 = f.read()
         with open(filename1, 'rb') as f:
@@ -69,7 +86,7 @@ def load_data(number):
         print(data1)
         tupledata = [int(data0), data1]
         sr.set(i*2, tupledata)
-
+        print(b'0x0d0x0a')
 ## record and get & set
 def record_voice():
     for i in range(len(words)):
@@ -101,7 +118,7 @@ try:
 except Exception as e:
     record_voice()
 
-print('recognizer')
+print('Recognition begin')
 img.draw_rectangle((0, 0, lcd_w, lcd_h), fill=True, color=(255, 255, 255))
 img.draw_string(10, 10, "Recognition begin", color=(255, 0, 0), scale=2, mono_space=0)
 lcd.display(img)
@@ -110,7 +127,7 @@ time.sleep_ms(1000)
 while True:
     time.sleep_ms(200)
     img.draw_rectangle((0, 0, lcd_w, lcd_h), fill=True, color=(255, 255, 255))
-    img.draw_string(10, 10, "Please speak words", color=(255, 0, 0), scale=2, mono_space=0)
+    img.draw_string(10, 10, "Please speak word!", color=(255, 0, 0), scale=2, mono_space=0)
     img.draw_string(10, 50, "BtnA: Record Voice", color=(0, 0, 255), scale=2, mono_space=0)
     lcd.display(img)
     if (button_a.value() == 0):
