@@ -26,15 +26,15 @@ If you refer to the comments in the source and change the GPIO pin settings, it 
 Write the bin in the firmware folder with kflash_gui and put boot.py on the root of the SD card and boot it.
 
 ## first boot
-The message "Please Speak A" will be displayed. Since there is no recording file, you will need to record three words that are at least one second long. Please register three words that are longer than one second (they will be registered as A, B, and C, respectively).
+The message "Please Speak 1" will be displayed. Since there is no recording file, you will need to record three words that are at least one second long. Please register three words that are longer than one second (they will be registered as 1, 2, and 3, respectively).
 
 ## after the socond time
-If there is a recording file on the SD card, it will start in voice recognition mode. When you speak a registered word, the corresponding letters A to C will be displayed.
+If there is a recording file on the SD card, it will start in voice recognition mode. When you speak a registered word, the corresponding letters 1 to 3 will be displayed.
 If you want to record again, press button A to enter the recording mode.
 
 # Customize
 ## increase words
-　The number of words can be increased by increasing  「words」 array in boot.py.
+The number of words can be increased by increasing  「words」 array in boot.py.
 
 ## when to misrecognize
 Refer to the log displayed in the terminal when you record, and adjust the following parameters.
