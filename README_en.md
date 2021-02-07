@@ -20,10 +20,12 @@ See [M5StickVのファームウェアビルド手順](https://raspberrypi.mongon
 # Supported
 M5StickV（with Microphone）
 
-If you refer to the comments in the source and change the GPIO pin settings, it will work on the Sipeed MaixDock and Maixduino. (The source referenced is for MaixDock.)
+If you refer to the comments in the source and change the GPIO pin settings, it will work on the Sipeed MaixM1Dock and Maixduino. (The source referenced is for MaixDock.)
 
 # Usage
-Write the bin in the firmware folder with kflash_gui and put boot.py on the root of the SD card and boot it.
+Write the bin in the firmware_for_M5StickV folder with kflash_gui and put boot.py on the root of the SD card and boot it.
+
+The firmware_for_Maix is for MaixM1Dock, Maixduino and MaixBit.
 
 ## first boot
 The message "Please Speak 1" will be displayed. Since there is no recording file, you will need to record three words that are at least one second long. Please register three words that are longer than one second (they will be registered as 1, 2, and 3, respectively).
