@@ -21,6 +21,10 @@ Speech Recognizerを使用するため、Sipeedから正式にリリースされ
 
 # 対応機種
 ## M5StickV（マイク搭載バージョンのみ）
+ファームウェアを書き換えると、M5StickVの電源ボタンの挙動が変わるので注意してください。
+- 電源ON：電源ボタンを短く２回押す
+- 電源OFF：電源ボタンを２秒以上長押し
+
 
 ## Sipeed MaixM1DockやMaixduino
 [boot.py](boot.py)のコメントを参照してBOARD_NAMEをMAIXDUINOかM1DOCKに変更してください。

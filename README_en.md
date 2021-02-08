@@ -19,6 +19,9 @@ See [M5StickVのファームウェアビルド手順](https://raspberrypi.mongon
 
 # Supported
 ## M5StickV（with Microphone）
+Notice: Updating the firmware will change the behavior of the power button.
+- Power ON: Press twice briefly.
+- Power OFF: Press more than 2 sec.
 
 ## Sipeed MaixM1Dock and Maixduino.
 Change BOARD_NAME in [boot.py](boot.py) to MAIXDUINO or M1DOCK.
