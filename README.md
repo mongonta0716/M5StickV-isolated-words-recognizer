@@ -13,19 +13,25 @@ Speech Recognizerを使用するため、Sipeedから正式にリリースされ
 - MaixPy IDE v0.2.5
 - firmware 0.6.2（ビルド済みのものを添付しています。）
 
+※ ファームウェアはM5StickV用とMaixシリーズ用の２種類あるので間違えないようにしてください。
+
 ## ファームウェアのビルド方法
 
 [M5StickVのファームウェアビルド手順](https://raspberrypi.mongonta.com/howto-build-firmware-of-m5stickv/)を参照してください。（日本語のみ）
 
 # 対応機種
-M5StickV（マイク搭載バージョンのみ）
+## M5StickV（マイク搭載バージョンのみ）
 
-ソースを参照してGPIOのピン設定及びボタンの処理を変えるとSipeed MaixM1DockやMaixduinoでも動きます。（参考にしたソースはMaixDock用です。）
+## Sipeed MaixM1DockやMaixduino
+[boot.py](boot.py)のコメントを参照してBOARD_NAMEをMAIXDUINOかM1DOCKに変更してください。
+
+新しいファームウェアなのでconfig.jsonファイルがflash上に必要です。MaixPyIDEで接続し、対応したスクリプトを実行してください。
+[https://github.com/sipeed/MaixPy_scripts/tree/master/board](https://github.com/sipeed/MaixPy_scripts/tree/master/board)
 
 # 使い方(Usage)
 firmware_for_M5StickVのフォルダにあるbinをkflash_guiで書き込み、boot.pyをSDカードのルート上に置いてM5StickVを起動してください。
 
-※ firmware_for_MaixはMaixM1Dock,Maixduino,MaixBit用です。
+※ firmware_for_MaixはMaixM1Dock,Maixduino用です。
 
 ## 初回起動
 「Please Speak 1」と表示されます。

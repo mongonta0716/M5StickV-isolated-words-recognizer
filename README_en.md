@@ -18,14 +18,18 @@ It uses Speech Recognizer, so it will not work with the firmware officially rele
 See [M5StickVのファームウェアビルド手順](https://raspberrypi.mongonta.com/howto-build-firmware-of-m5stickv/)（Japanese Only）
 
 # Supported
-M5StickV（with Microphone）
+## M5StickV（with Microphone）
 
-If you refer to the comments in the source and change the GPIO pin settings, it will work on the Sipeed MaixM1Dock and Maixduino. (The source referenced is for MaixDock.)
+## Sipeed MaixM1Dock and Maixduino.
+Change BOARD_NAME in [boot.py](boot.py) to MAIXDUINO or M1DOCK.
+
+You will need config.json in flash. Please refer to the following link to run the Python script that fits your board in MaixPyIDE.
+[https://github.com/sipeed/MaixPy_scripts/tree/master/board](https://github.com/sipeed/MaixPy_scripts/tree/master/board)
 
 # Usage
 Write the bin in the firmware_for_M5StickV folder with kflash_gui and put boot.py on the root of the SD card and boot it.
 
-The firmware_for_Maix is for MaixM1Dock, Maixduino and MaixBit.
+The firmware_for_Maix is for MaixM1Dock, Maixduino.
 
 ## first boot
 The message "Please Speak 1" will be displayed. Since there is no recording file, you will need to record three words that are at least one second long. Please register three words that are longer than one second (they will be registered as 1, 2, and 3, respectively).

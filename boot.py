@@ -2,17 +2,25 @@
 # Copyright (c) 2021 Takao Akaki. All rights reserved.
 #####################################################################
 
+# Notice:
+# If you want to use it with Sipeed Maix series, you need config.json in flash.
+# Run the script in the link below.
+# https://github.com/sipeed/MaixPy_scripts/tree/master/board
+
+# BOARD_NAME == M5STICKV or M1DOCK or MAIXDUINO
+BOARD_NAME = "M5STICKV"
 
 import time
 from Maix import GPIO, I2S
 from fpioa_manager import *
 from board import board_info
 import os, Maix, lcd, image
-from pmu import axp192
 from machine import I2C
 
-pmu = axp192()
-pmu.enablePMICSleepMode(True)
+if (BOARD_NAME == "M5STICKV"):
+    from pmu import axp192
+    pmu = axp192()
+    pmu.enablePMICSleepMode(True)
 
 sample_rate   = 16000
 
@@ -27,18 +35,28 @@ words = ["1", "2", "3"]
 # If the word recognition rate is low, look at the values of
 # dtw_value and current_frame_len in the terminal and adjust them.
 dtw_threshold = 400
-frame_len_threshold = 60
+frame_len_threshold = 70
 
 # Settings for M5StickV. Maix series should fix the following lines.
-lcd.init(type=3)
-fm.register(board_info.MIC_DAT,fm.fpioa.I2S0_IN_D0, force=True)
-fm.register(board_info.MIC_LRCLK,fm.fpioa.I2S0_WS, force=True)
-fm.register(board_info.MIC_CLK,fm.fpioa.I2S0_SCLK, force=True)
-fm.register(board_info.BUTTON_A, fm.fpioa.GPIO1, force=True)
-button_a = GPIO(GPIO.GPIO1, GPIO.IN, GPIO.PULL_UP)
+if (BOARD_NAME == "M5STICKV"):
+    lcd.init(type=3)
+    fm.register(board_info.MIC_DAT,fm.fpioa.I2S0_IN_D0, force=True)
+    fm.register(board_info.MIC_LRCLK,fm.fpioa.I2S0_WS, force=True)
+    fm.register(board_info.MIC_CLK,fm.fpioa.I2S0_SCLK, force=True)
+    fm.register(board_info.BUTTON_A, fm.fpioa.GPIO1, force=True)
+    button_a = GPIO(GPIO.GPIO1, GPIO.IN, GPIO.PULL_UP)
+    button_a_label = "BtnA"
+elif ((BOARD_NAME == "MAIXDUINO") or (BOARD_NAME == "M1DOCK")):
+    lcd.init()
+    fm.register(board_info.MIC0_DATA, fm.fpioa.I2S0_IN_D0, force=True)
+    fm.register(board_info.MIC0_WS, fm.fpioa.I2S0_WS, force=True)
+    fm.register(board_info.MIC0_BCK, fm.fpioa.I2S0_SCLK, force=True)
+    fm.register(board_info.BOOT_KEY, fm.fpioa.GPIO1, force=True)
+    button_a = GPIO(GPIO.GPIO1, GPIO.IN, GPIO.PULL_UP)
+    button_a_label = "BtnBoot"
 
 # data storage "/sd/" or "/flash/"
-storage = "/sd/"
+storage = "/flash/"
 
 
 #####################################################################
@@ -111,9 +129,13 @@ def record_voice():
 # Main
 ##############################################################################
 lcd.rotation(0)
-# set lcd backlight for M5StickV
-i2c = I2C(I2C.I2C0, freq=400000, scl=28, sda=29)
-i2c.writeto_mem(0x34, 0x91, b'\xa0')
+
+if (BOARD_NAME == "M5STICKV"):
+    # set lcd backlight for M5StickV
+    i2c = I2C(I2C.I2C0, freq=400000, scl=28, sda=29)
+    i2c.writeto_mem(0x34, 0x91, b'\xa0')
+elif ((BOARD_NAME == "MAIXDUINO") or (BOARD_NAME == "M1DOCK")):
+    lcd.set_backlight(50)
 
 lcd_w = lcd.width()
 lcd_h = lcd.height()
@@ -145,7 +167,7 @@ time.sleep_ms(1000)
 
 while True:
     time.sleep_ms(200)
-    print_lcd("Please speak word!", "BtnA: Record Voice", serial_out=False)
+    print_lcd("Please speak word!", button_a_label + ":Record Voice", serial_out=False)
     if (button_a.value() == 0):
         record_voice()
     if sr.Done == sr.recognize():
@@ -157,3 +179,4 @@ while True:
                 if res[0] == (i * 2):
                     print_lcd("Recognize",str3=words[i], bgcolor=(255, 255, 255))
                     time.sleep_ms(200)
+
